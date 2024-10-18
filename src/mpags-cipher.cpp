@@ -4,48 +4,57 @@
 #include <vector>
 
 std::string transformChar(const char inputChar){
-    /* Translisterate digits to english words, ignoring
-    no alphanumeric characters
+    /* Translisterate an input char according to the following rules
     
-    const char inputChar: Digit to be converted
+     -Alphabetic characters are made uppercase
+     -Digits are converted to english words
+     -All non alpha-numeric characters are ignored
     
-    return: A string of the english word equivalent of inputChar
+    const char inputChar: Character to be converted
+    
+    return: A string of the transliterated inputChar
     */
-    std::string outputString{""};
+
+    std::string inputText{""};
+    // Uppercase alphabetic characters
+    if (std::isalpha(inputChar)) {
+        inputText = std::toupper(inputChar);
+        return inputText;
+    }   
     switch (inputChar) {
         case '0':
-            outputString = "ZERO";
+            inputText = "ZERO";
             break;
         case '1':
-            outputString = "ONE";
+            inputText = "ONE";
             break;
         case '2':
-            outputString = "TWO";
+            inputText = "TWO";
             break;
         case '3':
-            outputString = "THREE";
+            inputText = "THREE";
             break;
         case '4':
-            outputString = "FOUR";
+            inputText = "FOUR";
             break;
         case '5':
-            outputString = "FIVE";
+            inputText = "FIVE";
             break;
         case '6':
-            outputString = "SIX";
+            inputText = "SIX";
             break;
         case '7':
-            outputString = "SEVEN";
+            inputText = "SEVEN";
             break;
         case '8':
-            outputString = "EIGHT";
+            inputText = "EIGHT";
             break;
         case '9':
-            outputString = "NINE";
+            inputText = "NINE";
             break;
         // If the character isn't alphabetic or numeric, DONT add it
     }
-    return outputString;
+    return inputText;
 }
 
 int main(int argc, char* argv[])
@@ -142,11 +151,6 @@ int main(int argc, char* argv[])
 
     // loop over each character from user input
     while (std::cin >> inputChar) {
-        // Uppercase alphabetic characters
-        if (std::isalpha(inputChar)) {
-            inputText += std::toupper(inputChar);
-            continue;
-        }
         inputText += transformChar(inputChar);
     }
 
