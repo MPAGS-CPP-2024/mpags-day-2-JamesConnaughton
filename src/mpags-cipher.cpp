@@ -3,6 +3,51 @@
 #include <string>
 #include <vector>
 
+std::string transformChar(const char inputChar){
+    /* Translisterate digits to english words, ignoring
+    no alphanumeric characters
+    
+    const char inputChar: Digit to be converted
+    
+    return: A string of the english word equivalent of inputChar
+    */
+    std::string outputString{""};
+    switch (inputChar) {
+        case '0':
+            outputString = "ZERO";
+            break;
+        case '1':
+            outputString = "ONE";
+            break;
+        case '2':
+            outputString = "TWO";
+            break;
+        case '3':
+            outputString = "THREE";
+            break;
+        case '4':
+            outputString = "FOUR";
+            break;
+        case '5':
+            outputString = "FIVE";
+            break;
+        case '6':
+            outputString = "SIX";
+            break;
+        case '7':
+            outputString = "SEVEN";
+            break;
+        case '8':
+            outputString = "EIGHT";
+            break;
+        case '9':
+            outputString = "NINE";
+            break;
+        // If the character isn't alphabetic or numeric, DONT add it
+    }
+    return outputString;
+}
+
 int main(int argc, char* argv[])
 {
     // Convert the command-line arguments into a more easily usable form
@@ -102,42 +147,7 @@ int main(int argc, char* argv[])
             inputText += std::toupper(inputChar);
             continue;
         }
-
-        // Transliterate digits to English words
-        switch (inputChar) {
-            case '0':
-                inputText += "ZERO";
-                break;
-            case '1':
-                inputText += "ONE";
-                break;
-            case '2':
-                inputText += "TWO";
-                break;
-            case '3':
-                inputText += "THREE";
-                break;
-            case '4':
-                inputText += "FOUR";
-                break;
-            case '5':
-                inputText += "FIVE";
-                break;
-            case '6':
-                inputText += "SIX";
-                break;
-            case '7':
-                inputText += "SEVEN";
-                break;
-            case '8':
-                inputText += "EIGHT";
-                break;
-            case '9':
-                inputText += "NINE";
-                break;
-        }
-
-        // If the character isn't alphabetic or numeric, DONT add it
+        inputText += transformChar(inputChar);
     }
 
     // Print out the transliterated text
