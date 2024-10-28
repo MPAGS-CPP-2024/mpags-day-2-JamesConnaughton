@@ -2,23 +2,26 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "TransformChar.hpp"
 #include "ProcessCommandLine.hpp"
+#include "RunCaesarCipher.hpp"
 
 int main(int argc, char* argv[])
 {
     // Convert the command-line arguments into a more easily usable form
     const std::vector<std::string> cmdLineArgs{argv, argv + argc};
-    // const std::size_t nCmdLineArgs{cmdLineArgs.size()};
 
     // Options that might be set by the command-line arguments
     bool helpRequested{false};
     bool versionRequested{false};
     std::string inputFile{""};
     std::string outputFile{""};
+    size_t key{0};
+    bool encrypt{true};
 
     // Process command-line arguments. Exit program if any errors are thrown
-    if (!processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile)){
+    if (!processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile, key, encrypt)){
         return 1;
     }
 
@@ -35,6 +38,8 @@ int main(int argc, char* argv[])
             << "                   Stdin will be used if not supplied\n\n"
             << "  -o FILE          Write processed text to FILE\n"
             << "                   Stdout will be used if not supplied\n\n"
+            << "  -k KEY [0, 25]   Key for the Caesar Cipher (default: 0)\n\n"
+            << "  -d               Decrypt flag"
             << std::endl;
         // Help requires no further action, so return from main
         // with 0 used to indicate success
@@ -53,27 +58,57 @@ int main(int argc, char* argv[])
     char inputChar{'x'};
     std::string inputText;
 
+    // Flag to determine whether to read from an input file or from console
+    bool read_from_file{false};
+    // std::ifstream in_file;
     // Read in user input from stdin/file
-    // Warn that input file option not yet implemented
     if (!inputFile.empty()) {
-        std::cerr << "[warning] input from file ('" << inputFile
-                  << "') not implemented yet, using stdin\n";
+        std::ifstream in_file{inputFile};
+        if (!in_file.good()){
+            std::cerr << "Cannot read from " << inputFile <<". Reverting to terminal input" << std::endl;
+        }
+        else{
+            read_from_file = true;
+            while(in_file >> inputChar){
+            inputText += transformChar(inputChar);
+        }
+        }
+    }
+    else{
+        std::cout << "No input file specifed. Reverting to terminal input" << std::endl;
     }
 
-    // loop over each character from user input
-    while (std::cin >> inputChar) {
-        inputText += transformChar(inputChar);
+    if (!read_from_file){
+        // loop over each character from user input
+        while (std::cin >> inputChar) {
+            inputText += transformChar(inputChar);
+        }
     }
+    
+    // Run the cipher
+    std::string cipherText = runCaesarCipher(inputText, key, encrypt);
 
     // Print out the transliterated text
 
-    // Warn that output file option not yet implemented
+    bool write_to_file{false};
     if (!outputFile.empty()) {
-        std::cerr << "[warning] output to file ('" << outputFile
-                  << "') not implemented yet, using stdout\n";
+        std::ofstream out_file{outputFile};
+        if (!out_file.good()){
+            std::cerr << "Cannot write to " << outputFile <<". Reverting to terminal output" << std::endl;
+        }
+        else{
+            write_to_file = true;
+            out_file << cipherText;
+        }
+    }
+    else{
+        std::cout << "No output file specifed. Reverting to terminal output" << std::endl;
     }
 
-    std::cout << inputText << std::endl;
+    if (!write_to_file){
+        std::cout << cipherText << std::endl;
+    }
+
 
     // No requirement to return from main, but we do so for clarity
     // and for consistency with other functions

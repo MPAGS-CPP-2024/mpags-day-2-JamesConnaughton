@@ -7,7 +7,9 @@ bool processCommandLine(
     bool& helpRequested,
     bool& versionRequested,
     std::string& inputFileName,
-    std::string& outputFileName)
+    std::string& outputFileName,
+    size_t& key,
+    bool& encrypt)
     /* Processes given command line arguments and modifies variables appropriately
     
     const std::vector<std::string>& cmdLineArgs: vector of command-line arguments
@@ -51,7 +53,29 @@ bool processCommandLine(
                 outputFileName = cmdLineArgs[i + 1];
                 ++i;
             }
-        } else {
+        } else if (cmdLineArgs[i] == "-k") {
+            // Handle key option
+            if (i == nCmdLineArgs - 1) {
+                std::cerr << "[error] -k requires a key argument"
+                          << std::endl;
+               return false;
+            } else {
+                // Retrieve argument and convert to numeric type
+                key = std::stoi(cmdLineArgs[i + 1]);
+                // Check to see if in bounds (0, 25)
+                // Since key is of type size_t (unsigned), any negative values passes will 
+                // also be greater than 25
+                if (key > 25){
+                    std::cerr << "[error] key must be in range [0, 25]"
+                              << std::endl;
+                    return false;
+                } 
+                ++i;
+            }
+        } else if (cmdLineArgs[i] == "-d") {
+            encrypt = false;
+        }
+        else {
             // Have an unknown flag to output error message and return non-zero
             // exit status to indicate failure
             std::cerr << "[error] unknown argument '" << cmdLineArgs[i]
